@@ -62,8 +62,10 @@ public class Kogane extends Enemy {
 		switch(act) {
 		case 0:
 			flag = true;
+			break;
 		case 1:
 			flag = false;
+			break;
 		case 2:
 			flag = true;
 			break;
