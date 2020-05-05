@@ -1,18 +1,15 @@
 package toriningen;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 
-public class Hero {
-	Scanner scanner = new Scanner(System.in);
-	private String name;
-	private int sex;
+public class Hero extends Player {
 	private String fPerson;
 	private int humanGage = 100;
 	private int walkCount;
 	private Road road;
 
 	Hero(String name, int sex) {
-		this.name = name;
-		this.sex = sex;
+		super(name, sex);
 		if(this.sex == 0) {
 			this.fPerson = "ぼく";
 		} else {
@@ -67,20 +64,24 @@ public class Hero {
 				break;
 			}
 		}
-		if(this.getHumanGage() == 0) {
-			return false;
-		} else {
-			return true;
-		}
+		return this.isRestHumanGage();
 	}
 	public void walkField() {
-		System.out.println("どこへいきますか？：");
 		int num = setPlaceNum();
 		String[] places = road.getSelectPlace(num);
-		System.out.println("（" + places[0] + "：0、" + places[1] + "：1）");
-		int select = scanner.nextInt();
-		System.out.println("よし、" + places[select] + "にきめた！ あるきはじめた。");
-		this.walkCount --;
+		ArrayList<String> roads = new ArrayList<String>();
+		roads.add(places[0]);
+		roads.add(places[1]);
+		try {
+			System.out.println("どこへいきますか？：");
+			int select = getCorrectUserData(roads);
+			System.out.println("よし、" + roads.get(select) + "にきめた！ あるきはじめた。");
+			this.walkCount --;
+		}
+		catch(InputMismatchException e) {
+			this.catchInputMismatchException(roads);
+			walkField();
+		}
 	}
 	public void battleEnemy(Enemy enemy) {
 		this.encounterEnemy(enemy);
@@ -106,30 +107,36 @@ public class Hero {
 		return num;
 	}
 	public int selectAct(Enemy enemy) {
-		String[] selectList = {
-			"はねをひろげる" ,
-			"けづくろいしてあげる",
-			"ごはんのばしょをおしえる",
-			"プロポーズする"
-		};
-		System.out.println("（はねをひろげる:0 , けづくろいしてあげる:1 , ごはんのばしょをおしえる:2 , プロポーズする:3）");
-		int select = scanner.nextInt();
-		System.out.println("よし ここは【" + selectList[select] + "】をしてみよう！");
-		return select;
+		ArrayList<String> selectList = new ArrayList<String>();
+		selectList.add("はねをひろげる");
+		selectList.add("けづくろいしてあげる");
+		selectList.add("ごはんのばしょをおしえる");
+		selectList.add("プロポーズする");
+		try {
+			int select =  this.getCorrectUserData(selectList);
+			System.out.println("よし ここは【" + selectList.get(select) + "】をしてみよう！");
+			return select;
+		}
+		catch(InputMismatchException e) {
+			this.catchInputMismatchException(selectList);
+			return selectAct(enemy);
+		}
 	}
 	public boolean selectBattleBoss(Boss boss) {
-		boolean bossPrepare;
 		System.out.print("やっと"  + boss.getName() + "のいえへとたどりついた！");
 		System.out.println("とりさんの ぼうがいにはあったけれど ぶじ ひとのこころをもったままだ。");
 		System.out.println("ここからどうする？：（ただいまの [にんげんゲージ] は" + this.humanGage + "％だ）");
-		System.out.println("（ひとにもどして もらえるよう こうしょうへいく:0 , さんさくして [にんげんゲージ] をあげる:1）");
-		int select = scanner.nextInt();
-		if(select == 0) {
-			bossPrepare = true;
-		} else {
-			bossPrepare = false;
+		ArrayList<String> selectList = new ArrayList<String>();
+		selectList.add("ひとにもどして もらえるよう こうしょうへいく");
+		selectList.add("さんさくして [にんげんゲージ] をあげる");
+		try {
+			int select = this.getCorrectUserData(selectList);
+			return this.changeIntBoolean(select);
 		}
-		return bossPrepare;
+		catch(InputMismatchException e) {
+			this.catchInputMismatchException(selectList);
+			return selectBattleBoss(boss);
+		}
 	}
 	public void encounterBoss(Boss boss) {
 		System.out.print("よし " + boss.getName() + "のいえへいってみよう！");
@@ -143,23 +150,29 @@ public class Hero {
 		int restPoint = boss.getSelectResult(this, act);
 		this.setHumanGage(restPoint);
 		boss.bossButtleResult(this);
+		return this.isRestHumanGage();
+	}
+	public int selectBossAct(Boss boss) {
+		ArrayList<String> selectList = new ArrayList<String>();
+		selectList.add("はねをめいいっぱいひろげる");
+		selectList.add("すっごいていねいにけづくろい");
+		selectList.add("ありったけのごはんのばしょをでんじゅ");
+		selectList.add("とうしんだいのあいをプロポーズ");
+		try {
+			int select =  this.getCorrectUserData(selectList);
+			System.out.println("よし ここは【" + selectList.get(select) + "】をしてみよう！");
+			return select;
+		}
+		catch(InputMismatchException e) {
+			this.catchInputMismatchException(selectList);
+			return selectBossAct(boss);
+		}
+	}
+	public boolean isRestHumanGage() {
 		if(this.getHumanGage() == 0) {
 			return false;
 		} else {
 			return true;
 		}
-	}
-	public int selectBossAct(Boss boss) {
-		String[] selectList = {
-			"はねをめいいっぱいひろげる" ,
-			"すっごいていねいにけづくろい",
-			"ありったけのごはんのばしょをでんじゅ",
-			"とうしんだいのあいをプロポーズ"
-		};
-		System.out.print("（はねをめいいっぱいひろげる:0 , すっごいていねいにけづくろい:1 , ");
-		System.out.println("ありったけのごはんのばしょをでんじゅ:2 , とうしんだいのあいをプロポーズ:3）");
-		int select = scanner.nextInt();
-		System.out.println("よし、ここは【" + selectList[select] + "】をしてみよう！");
-		return select;
 	}
 }

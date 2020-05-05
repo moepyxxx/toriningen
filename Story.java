@@ -1,35 +1,16 @@
 package toriningen;
-import java.util.Scanner;
 
 public class Story {
-	Scanner scanner = new Scanner(System.in);
 
 	public void settingGame(Hero hero, Boss boss) {
-		String playerName = this.setPlayerName();
-		int playerSex = this.setPlayerSex();
-		int bossStrength = this.setBossStrength(boss);
+		String playerName = hero.setPlayerName(this);
+		int playerSex = hero.setPlayerSex(this);
+		int bossStrength = hero.setBossStrength(boss);
 		hero.setName(playerName);
 		hero.setSex(playerSex);
 		boss.setStrength(bossStrength);
 		System.out.print("あなたのなまえ：" + hero.getName() + "、あなたのせいべつ：" + hero.getSexString());
 		System.out.println("…ということで ゲームかいしです！");
-	}
-	public String setPlayerName() {
-		System.out.println("あなたの なまえ を おしえてください：");
-		String name = scanner.next();
-		return name;
-	}
-	public int setPlayerSex() {
-		System.out.println("あなたの せいべつ をおしえてください：");
-		System.out.println("（おとこの場合：0、おんなの場合：1）");
-		int sex = scanner.nextInt();
-		return sex;
-	}
-	public int setBossStrength(Boss boss) {
-		System.out.println("ボスである " + boss.getName() + "の つよさを えらんでください：");
-		System.out.println("（そこそこつよい：0, むっちゃつよい：1, やばい（ほぼクリアできない）：2）");
-		int bossStrength = scanner.nextInt();
-		return bossStrength;
 	}
 	public void firstExplained(Boss boss, Hero hero) {
 		System.out.println("【 とりにんげん 〜 とりになってしまったひと 〜 】");
@@ -78,21 +59,9 @@ public class Story {
 		System.out.println("【 とりにんげん 〜 GAME OVER 〜 】");
 	}
 	public void gameClear(Hero hero) {
-		System.out.println("[にんげんゲージ] がすべてかいふくした。そのせつな " + hero.getFPerson() + "は 自分が人であることを完全に思い出した。");
-		System.out.println("あの美味しいからあげのことも、全部思い出したのだ。" + hero.getFPerson() + "は、人間に戻れて本当に良かった！");
-		System.out.println("でも忘れないでください・・・人であることをやめようと思ったら、また鳥の王様が悪いいたずらをするかもしれないから・・・。");
+		System.out.println("[にんげんゲージ] がかいふくした。そのせつな " + hero.getFPerson() + "は 自分が人であることを思い出した。");
+		System.out.println("あの美味しいからあげのことも、思い出したのだ。" + hero.getFPerson() + "は、人間に戻れて本当に良かった！");
+		System.out.println("でも忘れないでください・・・人であることをやめようと思ったら、また鳥の王様がいたずらをするかもしれない・・・。");
 		System.out.println("【 とりにんげん 〜 GAME CLEAR 〜 】");
-	}
-	public boolean gameRetry() {
-		System.out.println("もういちど トライしますか？");
-		System.out.println("（トライする：0, もうやめる：1）");
-		int answer = scanner.nextInt();
-		boolean retry;
-		if(answer == 0) {
-			retry = true;
-		} else {
-			retry = false;
-		}
-		return retry;
 	}
 }

@@ -31,7 +31,7 @@ public class Main {
 			} else {
 				story.gameOver(hero);
 			}
-			tryPrepare = story.gameRetry();
+			tryPrepare = hero.gameRetry();
 		}
 		System.out.println("= = = = = = = = = = = = = = = = = =");
 	}
